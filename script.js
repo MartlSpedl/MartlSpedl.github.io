@@ -5,7 +5,7 @@ const nameArray = [
     {name: "Molly Weasley", owner: "Hippo2269", haus: "Gryffindor"},
     {name: "Draco Malfoy", owner: "Naira Riddle", haus: "Slytherin"},
     {name: "Nymphadora Tonks", owner: "TheLillySnape", haus: "Hufflepuff"},
-    {name: "Remus Lupin", owner: "115Mutato", haus: "Hufflepuff"},
+    {name: "Remus Lupin", owner: "Mutato", haus: "Hufflepuff"},
     {name: "Minerva Mcgonagall", owner: "Kodala22", haus: "Gryffindor"},
     {name: "Filius Flitwick", owner: "SardieKane", haus: "Ravenclaw"},
     {name: "Sirius Black", owner: "JamesLupin_S", haus: "Gryffindor"},
