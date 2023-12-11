@@ -6,18 +6,37 @@ const nameArray = [
     {name: "Draco Malfoy", owner: "Naira Riddle", haus: "Slytherin"},
     {name: "Nymphadora Tonks", owner: "TheLillySnape", haus: "Hufflepuff"},
     {name: "Remus Lupin", owner: "Mutato", haus: "Gryffindor"},
-    {name: "Minerva Mcgonagall", owner: "Kodala22", haus: "Gryffindor"},
+    {name: "Minerva McGonagall", owner: "Kodala22", haus: "Gryffindor"},
     {name: "Filius Flitwick", owner: "SardieKane", haus: "Ravenclaw"},
     {name: "Sirius Black", owner: "JamesLupin_S", haus: "Gryffindor"},
     {name: "Bellatrix Lestrange", owner: "Wölfchen_DA", haus: "Slytherin"},
     {name: "Severus Snape", owner: "Wusel_Flusel", haus: "Slytherin"},
+    {name: "Albus Dumbledore", owner: "APWDumledore", haus: "Gryffindor"},
 ];
 
 function showOwner(owner, event) {
     const ownerPopup = document.getElementById('ownerPopup');
     ownerPopup.innerText = `${owner}`;
-    ownerPopup.style.left = `${event.clientX}px`;
-    ownerPopup.style.top = `${event.clientY}px`;
+
+    // Berücksichtige die Höhe des Owner-Popups und füge zusätzlichen Abstand hinzu
+    const popupHeight = ownerPopup.clientHeight || 25; // Standardhöhe, falls die Berechnung fehlschlägt
+    const popupWidth = ownerPopup.clientWidth || 100; // Standardbreite, falls die Berechnung fehlschlägt
+    const margin = 20; // Abstand vom Rand
+
+    let topPosition = event.clientY - popupHeight - margin;
+    let leftPosition = event.clientX + margin;
+
+    // Überprüfe, ob das Popup den sichtbaren Bereich überschreitet und korrigiere die Position entsprechend
+    if (topPosition < 0) {
+        topPosition = margin;
+    }
+
+    if (leftPosition + popupWidth > window.innerWidth) {
+        leftPosition = window.innerWidth - popupWidth - margin;
+    }
+
+    ownerPopup.style.left = `${leftPosition}px`;
+    ownerPopup.style.top = `${topPosition}px`;
     ownerPopup.style.display = 'block';
 }
 
@@ -27,10 +46,11 @@ function hideOwner() {
 }
 
 function checkOverlap(newNameElement, existingElements) {
-    const margin = 10; // Abstand zwischen den Elementen
+    const margin = 25; // Abstand zwischen den Elementen
+
+    const rect1 = newNameElement.getBoundingClientRect();
 
     for (const existingElement of existingElements) {
-        const rect1 = newNameElement.getBoundingClientRect();
         const rect2 = existingElement.getBoundingClientRect();
 
         if (
@@ -46,19 +66,28 @@ function checkOverlap(newNameElement, existingElements) {
     return false;
 }
 
+
 function getRandomPosition(existingElements) {
-    const maxWidth = window.innerWidth - 100;
-    const maxHeight = window.innerHeight - 20;
+    const nameWidth = 200; // Adjust based on the width of your names
+    const nameHeight = 40; // Adjust based on the height of your names
+
+    const maxWidth = window.innerWidth - (nameWidth+10);
+    const maxHeight = window.innerHeight - (nameHeight+10);
 
     let left, top;
 
     do {
         left = Math.random() * maxWidth;
         top = Math.random() * maxHeight;
-    } while (checkOverlap({getBoundingClientRect: () => ({left, top})}, existingElements));
+    } while (
+        checkOverlap({ getBoundingClientRect: () => ({ left, top, right: left + nameWidth, bottom: top + nameHeight }) }, existingElements) ||
+        left < 0 ||
+        top < 0
+        );
 
-    return {left, top};
+    return { left, top };
 }
+
 
 function redirectToPage(name) {
     const sanitizedName = name.replace(/\s+/g, '-').toLowerCase();
@@ -108,5 +137,6 @@ function displayRandomNames() {
         body.appendChild(nameElement);
     });
 }
+
 
 displayRandomNames();
